@@ -47,21 +47,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <form method="post">
 
-        Item Name:<br>
+        Item Name:
         <input type="text" name="itemName" value="<?php echo $itemName; ?>">
         <span style="color:red"><?php echo $errors['itemName'] ?? ''; ?></span>
         <br><br>
 
-        Price:<br>
+        Price:
         <input type="text" name="price" value="<?php echo $price; ?>">
         <span style="color:red"><?php echo $errors['price'] ?? ''; ?></span>
         <br><br>
 
-        Type:<br>
+        Type:
         <strong>Gaming PC</strong>
         <br><br>
 
-        Extras:<br>
+        Extras:
         <input type="checkbox" name="extras[]" value="RGB" <?php if (in_array("RGB",$extras)) echo "checked"; ?>> RGB
         <input type="checkbox" name="extras[]" value="Liquid Cooling" <?php if (in_array("Liquid Cooling",$extras)) echo "checked"; ?>> Liquid Cooling
         <input type="checkbox" name="extras[]" value="WiFi" <?php if (in_array("WiFi",$extras)) echo "checked"; ?>> WiFi
