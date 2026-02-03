@@ -1,4 +1,15 @@
 <?php
+// DATABASE CONNECTION
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "tjgdatabase";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+if ($conn->connect_error) {
+    die("Database connection failed: " . $conn->connect_error);
+}
+
 $itemName = "";
 $price = "";
 $extras = [];
@@ -23,6 +34,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!empty($_POST['extras'])) {
         $extras = $_POST['extras'];
     }
+
+    if (empty($errors)) {
+        $extrasString = implode(", ", $extras);
+        $itemType = "Gaming PC";
+
+        $stmt = $conn->prepare(
+                "INSERT INTO items (item_name, price, item_type, extras)
+             VALUES (?, ?, ?, ?)"
+        );
+
+        if (!$stmt) {
+            $errors['database'] = "Prepare failed: " . $conn->error;
+        } else {
+            $stmt->bind_param("sdss", $itemName, $price, $itemType, $extrasString);
+
+            if (!$stmt->execute()) {
+                $errors['database'] = "Insert failed: " . $stmt->error;
+            }
+
+            $stmt->close();
+        }
+    }
 }
 ?>
 
@@ -35,18 +68,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <h2>Add Gaming PC</h2>
 
+<?php if (!empty($errors['database'])): ?>
+    <p style="color:red"><?php echo $errors['database']; ?></p>
+<?php endif; ?>
+
 <?php if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($errors)): ?>
 
-    <h3>Form Accepted</h3>
+    <h3>Item Added Successfully</h3>
     <p><strong>Item Name:</strong> <?php echo $itemName; ?></p>
     <p><strong>Price:</strong> $<?php echo $price; ?></p>
     <p><strong>Type:</strong> Gaming PC</p>
-    <p><strong>Extras:</strong> <?php echo implode(", ", $extras); ?></p>
+    <p><strong>Extras:</strong> <?php echo $extrasString; ?></p>
 
 <?php else: ?>
 
     <form method="post">
-
         Item Name:
         <input type="text" name="itemName" value="<?php echo $itemName; ?>">
         <span style="color:red"><?php echo $errors['itemName'] ?? ''; ?></span>
@@ -57,8 +93,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <span style="color:red"><?php echo $errors['price'] ?? ''; ?></span>
         <br><br>
 
-        Type:
-        <strong>Gaming PC</strong>
+        Type: <strong>Gaming PC</strong>
         <br><br>
 
         Extras:
@@ -68,13 +103,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <br><br>
 
         <input type="submit" value="Submit">
-
     </form>
 
 <?php endif; ?>
 
 </body>
 </html>
-
-
-

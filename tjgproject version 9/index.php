@@ -71,6 +71,9 @@ function currentDateInfo() {
     <a href="#">Prebuilt PCs</a>
     <a href="#">Custom Builds</a>
     <a href="#">Contact</a>
+    <a href="itemform.php">Add Item</a>
+    <a href="itemdisplay.php">View Item</a>
+    <a href="ordersdisplay.php">View Orders</a>
 
 </nav>
 
